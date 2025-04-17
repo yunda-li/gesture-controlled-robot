@@ -21,7 +21,7 @@ mp_pose = mp.solutions.pose
 class PoseCommandsNode(DTROS):
     def __init__(self, node_name):
         super(PoseCommandsNode, self).__init__(node_name=node_name, node_type=NodeType.GENERIC)
-        # Get vehicle name and set up topics
+        # Set up topics
         camera_topic = f"/mrduck/camera_node/image/compressed"
         twist_topic = f"/mrduck/car_cmd_switch_node/cmd"
 

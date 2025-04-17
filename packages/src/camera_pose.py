@@ -21,7 +21,7 @@ mp_pose = mp.solutions.pose
 class CameraPoseNode(DTROS):
     def __init__(self, node_name):
         super(CameraPoseNode, self).__init__(node_name=node_name, node_type=NodeType.GENERIC)
-        # Get vehicle name and set up topics
+        # Set up topics
         camera_topic = f"/mrduck/camera_node/image/compressed"
         twist_topic = f"/mrduck/car_cmd_switch_node/cmd"
         
@@ -33,7 +33,6 @@ class CameraPoseNode(DTROS):
         
         # Movement parameters
         self.vel_forward = 0.2
-
 
         self.centroid = None
 
@@ -49,10 +48,10 @@ class CameraPoseNode(DTROS):
         # shape is 480x640x3
         
         try:
-            # Convert the compressed image ROS message to OpenCV format
+            # Convert ROS message to OpenCV format
             cv_image = self.bridge.compressed_imgmsg_to_cv2(data, "bgr8")
 
-            # Resize the image to reduce resolution and computational load
+            # Rescale image to reduce load
             scale_percent = 75  # percent of original size
             width = int(cv_image.shape[1] * scale_percent / 100)
             height = int(cv_image.shape[0] * scale_percent / 100)

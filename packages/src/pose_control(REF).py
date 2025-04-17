@@ -17,7 +17,7 @@ mp_pose = mp.solutions.pose
 class CameraPoseNode(DTROS):
     def __init__(self, node_name):
         super(CameraPoseNode, self).__init__(node_name=node_name, node_type=NodeType.GENERIC)
-        # Get vehicle name and set up topics
+        # Set up topics
         camera_topic = f"/mrduck/camera_node/image/compressed"
         #Throttled camera test
         # camera_topic = "/mrduck/camera_node/image/compressed_throttled"
