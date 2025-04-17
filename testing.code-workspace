@@ -1,0 +1,17 @@
+{
+	"folders": [
+		{
+			"path": "packages/testing"
+		},
+		{
+			"path": "launchers"
+		},
+		{
+			"path": "../dtproject_ros_test/packages/my_package/src"
+		},
+		{
+			"path": "."
+		}
+	],
+	"settings": {}
+}

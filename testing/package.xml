@@ -1,0 +1,11 @@
+<package>
+  <name>testing</name>
+  <version>0.0.1</version>
+  <description>
+  catkin package for ME740 final project.
+  </description>
+  <maintainer email="yunli1618@gmail.com">Yunda Li</maintainer>
+  <license>None</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+</package>

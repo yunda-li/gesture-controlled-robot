@@ -1,0 +1,54 @@
+Shoulder angles - Left: 52.36466172395717 Right: 53.518569512142676
+Shoulder - Wrist Orientation: Left: (20.985069274902344,) Right: (7.992877960205078,)
+Elbow angles - Left: 105.14286482259118 Right: 97.2262381537643
+Shoulder - Hip Distance: Left: 40.59010393159472, Right: 41.739428282531584
+I0000 00:00:1714003971.372790      63 gl_context_egl.cc:85] Successfully initialized EGL. Major : 1 Minor: 5
+I0000 00:00:1714003971.389887    1765 gl_context.cc:357] GL version: 3.2 (OpenGL ES 3.2 NVIDIA 535.171.04), renderer: NVIDIA GeForce GTX 1060/PCIe/SSE2
+Shoulder angles - Left: 51.960921866824854 Right: 51.19985750856391
+Shoulder - Wrist Orientation: Left: (20.3399658203125,) Right: (8.36029052734375,)
+Elbow angles - Left: 102.38315915536441 Right: 98.3043223352329
+Shoulder - Hip Distance: Left: 40.5117542224654, Right: 41.40933150455234
+I0000 00:00:1714003971.559187      63 gl_context_egl.cc:85] Successfully initialized EGL. Major : 1 Minor: 5
+I0000 00:00:1714003971.578251    1774 gl_context.cc:357] GL version: 3.2 (OpenGL ES 3.2 NVIDIA 535.171.04), renderer: NVIDIA GeForce GTX 1060/PCIe/SSE2
+Shoulder angles - Left: 54.85857085972087 Right: 56.479785819867594
+Shoulder - Wrist Orientation: Left: (19.161529541015625,) Right: (12.136173248291016,)
+Elbow angles - Left: 97.18559196525138 Right: 93.56650413580252
+Shoulder - Hip Distance: Left: 43.71899048349705, Right: 50.30899667605351
+I0000 00:00:1714003971.772556      63 gl_context_egl.cc:85] Successfully initialized EGL. Major : 1 Minor: 5
+I0000 00:00:1714003971.789125    1783 gl_context.cc:357] GL version: 3.2 (OpenGL ES 3.2 NVIDIA 535.171.04), renderer: NVIDIA GeForce GTX 1060/PCIe/SSE2
+Shoulder angles - Left: 53.04336309366651 Right: 57.434794665531136
+Shoulder - Wrist Orientation: Left: (19.162025451660156,) Right: (12.680606842041016,)
+Elbow angles - Left: 95.2807780610093 Right: 88.17395168508276
+Shoulder - Hip Distance: Left: 45.53095431193122, Right: 51.73235422581688
+
+
+
+
+Shoulder angles - Left: 61.21761206507993 Right: 50.74483970272035
+Shoulder - Wrist Orientation: Left: (43.164100646972656,) Right: (3.2842254638671875,)
+Elbow angles - Left: 145.50304835264978 Right: 104.60039486437717
+Shoulder - Hip Distance: Left: 60.75990074545331, Right: 20.806642392914366
+I0000 00:00:1714004249.669991      63 gl_context_egl.cc:85] Successfully initialized EGL. Major : 1 Minor: 5
+I0000 00:00:1714004249.686789    1162 gl_context.cc:357] GL version: 3.2 (OpenGL ES 3.2 NVIDIA 535.171.04), renderer: NVIDIA GeForce GTX 1060/PCIe/SSE2
+Shoulder angles - Left: 62.57534863746036 Right: 50.57622090997295
+Shoulder - Wrist Orientation: Left: (34.87751007080078,) Right: (4.305419921875,)
+Elbow angles - Left: 147.27148790578923 Right: 104.99669278359944
+Shoulder - Hip Distance: Left: 56.15321418421868, Right: 21.938640530711783
+I0000 00:00:1714004249.889666      63 gl_context_egl.cc:85] Successfully initialized EGL. Major : 1 Minor: 5
+I0000 00:00:1714004249.919506    1171 gl_context.cc:357] GL version: 3.2 (OpenGL ES 3.2 NVIDIA 535.171.04), renderer: NVIDIA GeForce GTX 1060/PCIe/SSE2
+Shoulder angles - Left: 63.760610244399594 Right: 48.828747596265636
+Shoulder - Wrist Orientation: Left: (25.074996948242188,) Right: (4.009952545166016,)
+Elbow angles - Left: 167.16827422745303 Right: 108.48563597443
+Shoulder - Hip Distance: Left: 46.87938820768032, Right: 18.849707482678067
+I0000 00:00:1714004250.096427      63 gl_context_egl.cc:85] Successfully initialized EGL. Major : 1 Minor: 5
+I0000 00:00:1714004250.153952    1180 gl_context.cc:357] GL version: 3.2 (OpenGL ES 3.2 NVIDIA 535.171.04), renderer: NVIDIA GeForce GTX 1060/PCIe/SSE2
+Shoulder angles - Left: 65.8474536524122 Right: 48.542572636738214
+Shoulder - Wrist Orientation: Left: (30.965194702148438,) Right: (4.089717864990234,)
+Elbow angles - Left: 154.27039141876975 Right: 104.68104613791384
+Shoulder - Hip Distance: Left: 53.66963284850494, Right: 19.302774098544237
+I0000 00:00:1714004250.345598      63 gl_context_egl.cc:85] Successfully initialized EGL. Major : 1 Minor: 5
+I0000 00:00:1714004250.369920    1189 gl_context.cc:357] GL version: 3.2 (OpenGL ES 3.2 NVIDIA 535.171.04), renderer: NVIDIA GeForce GTX 1060/PCIe/SSE2
+Shoulder angles - Left: 65.1095436709876 Right: 49.91163854568795
+Shoulder - Wrist Orientation: Left: (29.83203887939453,) Right: (4.600162506103516,)
+Elbow angles - Left: 147.39269502581496 Right: 106.88229448420232
+Shoulder - Hip Distance: Left: 53.31285181765861, Right: 20.78768684061413
