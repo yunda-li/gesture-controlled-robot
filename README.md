@@ -50,11 +50,7 @@ dts devel run -R <robot_name> -L final_launcher -X --runtime nvidia --gpus all
 
 You can watch the full final_launcher demo here:
 
-https://drive.google.com/file/d/1NgYXbn2g9zULR_QFsH5DNA11RgRCjx_x/view?usp=drive_link 
-
-Camera feed to play at the same time:
-
-https://drive.google.com/file/d/1tHPkb0PjlOKdV3JXfOhhiUrSaB3ETPMt/view?usp=drive_link 
+https://github.com/user-attachments/assets/67cffdfc-f72b-49f5-a092-12ef77054b64
 
 ## Future Work
 
