@@ -8,6 +8,15 @@ This project implements a robotics system on the Duckietown DB21J Robot that all
 * Integration with Duckietown DB21J robot and software
 * Utilizes Google MediaPipe for 2D pose estimation
 
+## Key Technologies & Concepts
+
+* **Robot Operating System (ROS Noetic):** Core framework for inter-process communication, sensor integration, and robot control.
+* **Google MediaPipe Pose Landmarker:** Employed for highly accurate, real-time 2D human pose estimation.
+* **Docker:** Ensures a consistent and reproducible development and deployment environment.
+* **Python:** Primary programming language for implementing robotics logic, computer vision, and gesture recognition algorithms.
+* **Computer Vision:** Applied for pose estimation, image processing, and potential future object detection.
+* **Human-Robot Interaction (HRI):** Focus on designing natural and intuitive control paradigms.
+* **Robot Control & Navigation:** Implementation of reactive behaviors and basic path planning for following and direction.
 
 ## Requirements
 
