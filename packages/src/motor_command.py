@@ -6,13 +6,10 @@ from std_msgs.msg import String, Int32
 from duckietown_msgs.msg import Twist2DStamped
 from duckietown.dtros import DTROS, NodeType
 
-
-
 class MotorCommandNode(DTROS):
-    def __init__(self, node_name):
+    def __init__(self, node_name) -> None:
         super(MotorCommandNode, self).__init__(node_name=node_name, node_type=NodeType.CONTROL)
         self.pose_sub = rospy.Subscriber("/pose_info", String, self.pose_callback)
-        #Int32 can't be None, must be 0
         self.centroid_sub = rospy.Subscriber('/centroid', Int32, self.centroid_callback)
 
         twist_topic = "/mrduck/car_cmd_switch_node/cmd"
@@ -27,30 +24,29 @@ class MotorCommandNode(DTROS):
 
         self.vel = 0.2
 
-    def pose_callback(self, msg):
+    def pose_callback(self, msg) -> None:
         self.pose = msg.data
 
-    def centroid_callback(self, msg):
+    def centroid_callback(self, msg) -> None:
         self.centroid = msg.data
         rospy.loginfo(f'MOTOR COMMAND CENTROID: {self.centroid}')
 
-    def stop(self):
+    def stop(self) -> None:
         rospy.sleep(0.25)
         twist_msg = Twist2DStamped(v=0.0, omega=0.0)
         self.cmd_pub.publish(twist_msg)
 
-    def run(self, v_input, omega_input):
+    def run(self, v_input, omega_input) -> None:
         rospy.sleep(0.25)
         twist_msg = Twist2DStamped(v=v_input, omega=omega_input)
         self.cmd_pub.publish(twist_msg)
         rospy.sleep(0.25)
     
-
-    def follow_turn(self, centroid):
+    def follow_turn(self, centroid) -> None:
         img_width = 640 * 0.75
         img_center = img_width / 2
         pos_diff = img_center - centroid
-        norm = 2.0  # This should be adjusted based on actual turning needs and scaling
+        norm = 2.0  # adjusted for testing with physical robot
 
         # rospy.loginfo(f'Centroid: {self.centroid}, Image center: {img_center}, Position difference: {pos_diff}')
 
@@ -61,7 +57,7 @@ class MotorCommandNode(DTROS):
         self.cmd_pub.publish(twist_msg)
 
 
-    def command_turn(self, target_angle, v, omega_rad):
+    def command_turn(self, target_angle, v, omega_rad) -> None:
         angle_to_rad = target_angle * (np.pi / 180)
         omega_rad = abs(omega_rad) if target_angle > 0 else -abs(omega_rad)
         spin_time = angle_to_rad / omega_rad
@@ -83,7 +79,7 @@ class MotorCommandNode(DTROS):
         self.cmd_pub.publish(twist_msg)
         rospy.sleep(0.5)
 
-    def search(self):
+    def search(self) -> None:
         rospy.sleep(0.5)
         #Calc how long to turn to spin 45 deg
         omega_rad = 1.2
@@ -104,7 +100,7 @@ class MotorCommandNode(DTROS):
 
     def main(self):
         search_delay_counter = 0
-        search_delay_threshold = 5  # mess around with this?
+        search_delay_threshold = 5 
 
         while not rospy.has_param('pose_processor_ready'):
             rospy.loginfo("Waiting for pose_processor to be ready...")
