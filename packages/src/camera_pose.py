@@ -19,19 +19,16 @@ mp_pose = mp.solutions.pose
 
 
 class CameraPoseNode(DTROS):
-    def __init__(self, node_name):
+    def __init__(self, node_name) -> None:
         super(CameraPoseNode, self).__init__(node_name=node_name, node_type=NodeType.GENERIC)
-        # Set up topics
         camera_topic = f"/mrduck/camera_node/image/compressed"
         twist_topic = f"/mrduck/car_cmd_switch_node/cmd"
         
         self.frame_without_landmarks_count = 0
         self.frames_threshold = 15
 
-        # Bridge between ROS and OpenCV
         self.bridge = CvBridge()
         
-        # Movement parameters
         self.vel_forward = 0.2
 
         self.centroid = None
@@ -40,19 +37,16 @@ class CameraPoseNode(DTROS):
         self.downsized_image = None
         self.processed_image = None
 
-        # ROS Subscribers and Publishers
         self.subscriber = rospy.Subscriber(camera_topic, CompressedImage, self.camera_callback)
         self.publisher = rospy.Publisher(twist_topic, Twist2DStamped, queue_size=1)
 
-    def camera_callback(self, data):
+    def camera_callback(self, data) -> None:
         # shape is 480x640x3
         
         try:
-            # Convert ROS message to OpenCV format
             cv_image = self.bridge.compressed_imgmsg_to_cv2(data, "bgr8")
 
-            # Rescale image to reduce load
-            scale_percent = 75  # percent of original size
+            scale_percent = 75  # percent of original image size
             width = int(cv_image.shape[1] * scale_percent / 100)
             height = int(cv_image.shape[0] * scale_percent / 100)
             dim = (width, height)
@@ -73,10 +67,6 @@ class CameraPoseNode(DTROS):
         cv2.waitKey(1)
     
     def detect_pose(self, image):
-
-        # mp_drawing = mp.solutions.drawing_utils
-        # mp_pose = mp.solutions.pose
-
         if image is None or image.size == 0:
             return False, None
     
@@ -85,11 +75,9 @@ class CameraPoseNode(DTROS):
             image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
             image.flags.writeable = False
 
-            # Make detection
             landmarks = None
             results = pose.process(image)
 
-            # Recolor back to BGR
             image.flags.writeable = True
             image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
 
@@ -98,31 +86,18 @@ class CameraPoseNode(DTROS):
                                         mp_drawing.DrawingSpec(color=(245,117,66), thickness=2, circle_radius=2), 
                                         mp_drawing.DrawingSpec(color=(245,66,230), thickness=2, circle_radius=2))
                 
-                landmarks = results.pose_landmarks.landmark
-                # print(f'LEFT ELBOW FOUND: {landmarks[mp_pose.PoseLandmark.LEFT_ELBOW.value]}')
-                # print(f'LEFT WRIST FOUND: {landmarks[mp_pose.PoseLandmark.LEFT_WRIST.value]}')
-
-                #FORMAT:
-                # LEFT ELBOW FOUND: x: 0.8109920620918274
-                # y: 0.43222060799598694
-                # z: 0.38565441966056824
-                # visibility: 0.025279544293880463
-
-            
+                landmarks = results.pose_landmarks.landmark       
         return image, landmarks
 
 
-    def calc_turn(self, landmarks):
+    def calc_turn(self, landmarks) -> float:
         if landmarks is not None:
             #Store shoulder landmarks, use to calculate centroid. left/ right assumes that person is facing camera
-            #Should be 640
             img_width = self.processed_image.shape[1]
 
             left_hip_pos = landmarks[mp_pose.PoseLandmark.LEFT_HIP.value].x * img_width
             right_hip_pos = landmarks[mp_pose.PoseLandmark.RIGHT_HIP.value].x * img_width
 
-            # print(f'left shoulder: {left_hip_pos}')
-            # print(f'right_shoulder: {right_hip_pos}')
 
             self.centroid = int((left_hip_pos + right_hip_pos) / 2)
 
@@ -131,10 +106,8 @@ class CameraPoseNode(DTROS):
 
             #Should be positive on left side of screen, negative on right side of screen
             #Turn should be positive to turn right, negative to turn left
-
             img_center = img_width / 2
             pos_diff = img_center - self.centroid
-            #Find this empirically
             norm = 1.8
 
             turn = (pos_diff / img_center) * norm
@@ -146,8 +119,8 @@ class CameraPoseNode(DTROS):
         return turn
 
 
-    def search(self):
-        #Calc how long to turn to spin 45 deg
+    def search(self) -> None:
+        #Need physical testing to determine how long to spin
         omega_rad = 1.0
         target_angle = 45.0
         angle_to_rad = target_angle * (np.pi / 180)
@@ -167,11 +140,11 @@ class CameraPoseNode(DTROS):
         rospy.sleep(0.05)
 
 
-    def run(self, v_input, omega_input):
+    def run(self, v_input, omega_input) -> None:
         twist_msg = Twist2DStamped(v=v_input, omega=omega_input)
         self.publisher.publish(twist_msg)
 
-    def stop(self):
+    def stop(self) -> None:
         twist_msg = Twist2DStamped(v=0, omega=0)
         self.publisher.publish(twist_msg)
 
