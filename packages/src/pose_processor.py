@@ -15,7 +15,7 @@ mp_pose = mp.solutions.pose
 
 
 class PoseProcessorNode(DTROS):
-    def __init__(self, node_name):
+    def __init__(self, node_name) -> None:
         super(PoseProcessorNode, self).__init__(node_name=node_name, node_type=NodeType.PERCEPTION)
 
         self.bridge = CvBridge()
@@ -28,21 +28,16 @@ class PoseProcessorNode(DTROS):
 
         self.camera_sub = rospy.Subscriber("/mrduck/camera_node/image/compressed", CompressedImage, self.camera_callback)
 
-        # self.mp_drawing = mp.solutions.drawing_utils
-        # self.mp_pose = mp.solutions.pose
-
         self.cv_image = None
         self.downsized_image = None
         self.processed_image = None
 
-    def camera_callback(self, data):
-        # shape is 480x640x3
-        
+    def camera_callback(self, data) -> None:
+        # Default shape is 480x640x3
         try:
-            # Convert to OpenCV format
             cv_image = self.bridge.compressed_imgmsg_to_cv2(data, "bgr8")
 
-            # Resize image to reduce load
+            # Need to balance performance increase with pose detection accuracy
             scale_percent = 75  # percent of original size
             width = int(cv_image.shape[1] * scale_percent / 100)
             height = int(cv_image.shape[0] * scale_percent / 100)
@@ -58,19 +53,16 @@ class PoseProcessorNode(DTROS):
             if self.processed_image is not None:
 
                 if self.centroid is not None:
-                    # Draw a vertical green line at x = self.centroid
+                    # Draw a vertical green line for human readability
                     height = self.processed_image.shape[0]
                     cv2.line(self.processed_image, (self.centroid, 0), (self.centroid, height), (0, 255, 0), 2)
 
                 if self.pose is not None:
-
-                    text_start = (10, 30)  # Position at (10, 30) pixels from the top-left corner
+                    text_start = (10, 30)  
                     font_scale = 1
                     font_color = (0, 0, 255)  
                     font_thickness = 2
                     font = cv2.FONT_HERSHEY_SIMPLEX
-
-                    # Put text onto the image
                     cv2.putText(self.processed_image, self.pose, text_start, font, font_scale, font_color, font_thickness)
 
             cv2.namedWindow('plotted_feed', cv2.WINDOW_AUTOSIZE)
@@ -84,10 +76,6 @@ class PoseProcessorNode(DTROS):
 
 
     def detect_pose(self, image):
-
-        # mp_drawing = mp.solutions.drawing_utils
-        # mp_pose = mp.solutions.pose
-
         if image is None or image.size == 0:
             return False, None
     
@@ -96,11 +84,9 @@ class PoseProcessorNode(DTROS):
             image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
             image.flags.writeable = False
 
-            # Make detection
             landmarks = None
             results = pose.process(image)
 
-            # Recolor back to BGR
             image.flags.writeable = True
             image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
 
@@ -113,17 +99,11 @@ class PoseProcessorNode(DTROS):
             
         return image, landmarks
     
-    def get_landmark_pos(self, landmarks, body_point):
-        #HARDCODE FOR NOW
-        # if self.processed_image is not None:
-        #     img_width = self.processed_image.shape[1]
-        #     img_height = self.processed_image.shape[0]
-        # else:
+    def get_landmark_pos(self, landmarks, body_point) -> None:
         if landmarks is not None:
             img_width = 640 * .75
             img_height = 480 * .75
 
-            # Convert string name to the corresponding PoseLandmark enum
             try:
                 body_point_enum = getattr(mp_pose.PoseLandmark, body_point)
                 landmark = landmarks[body_point_enum.value]
@@ -131,7 +111,6 @@ class PoseProcessorNode(DTROS):
                 x_pos = landmark.x * img_width
                 y_pos = landmark.y * img_height
 
-                # print(f"Landmark position for {body_point}: ({x_pos}, {y_pos})")
                 return (x_pos, y_pos)
             except AttributeError:
                 print(f"Error: Invalid landmark name '{body_point}'.")
@@ -141,7 +120,7 @@ class PoseProcessorNode(DTROS):
             pass
 
 
-    def pos_landmarks(self, landmarks):
+    def pos_landmarks(self, landmarks) -> None:
 
         landmark_positions = {name: self.get_landmark_pos(landmarks, name) for name in [
             'RIGHT_WRIST', 'LEFT_WRIST', 'RIGHT_ELBOW', 'LEFT_ELBOW', 
@@ -160,9 +139,6 @@ class PoseProcessorNode(DTROS):
         right_hip = landmark_positions['RIGHT_HIP']
         left_hip = landmark_positions['LEFT_HIP']
 
-        # #Test these individually, and check for proper corresponding movement.
-        # print(f'right_wrist coord: {right_knee}')
-        # print(f'left_wrist coord: {left_knee}')
 
         right_shoulder_angle = self.calc_angle(right_elbow, right_shoulder, right_hip)
         right_elbow_angle = self.calc_angle(right_wrist, right_elbow, right_shoulder)
@@ -175,11 +151,7 @@ class PoseProcessorNode(DTROS):
         angle_90 = 80
         angle_180 = 180
 
-        #T pose for stop
-        # if (self.angle_within_tol(right_shoulder_angle, angle_90, angle_tol)) and (self.angle_within_tol(left_shoulder_angle, angle_90, angle_tol))
-        #     self.pose = "STOP"
-
-        #PUT CONDITIONS IN LIST, THIS MAKES THE MOST SENSE I THINK
+        # T Pose
         stop_conditions = [
             self.check_angle(right_shoulder_angle, angle_90, angle_tol),
             self.check_angle(left_shoulder_angle, angle_90, angle_tol),
@@ -187,6 +159,7 @@ class PoseProcessorNode(DTROS):
             self.check_orientation(left_shoulder, left_elbow, 'x', orientation_tol),
         ]
 
+        # Arms up
         forward_conditions = [
             self.check_angle(right_shoulder_angle, angle_180, angle_tol),
             self.check_angle(left_shoulder_angle, angle_180, angle_tol),
@@ -194,10 +167,8 @@ class PoseProcessorNode(DTROS):
             self.check_orientation(left_shoulder, left_elbow, 'y', orientation_tol),
         ]
 
-        #Hands on hips
+        # Hands on hips
         backward_conditions = [
-            # self.check_angle(right_shoulder_angle, 50, angle_tol),
-            # self.check_angle(left_shoulder_angle, 50, angle_tol),
             self.check_orientation(right_shoulder, right_wrist, 'y', orientation_tol),
             self.check_orientation(left_shoulder, left_wrist, 'y', orientation_tol),  
             self.check_angle(right_elbow_angle, 100, angle_tol),
@@ -205,39 +176,21 @@ class PoseProcessorNode(DTROS):
 
         ]
 
-        #FROM HUMAN PERSPECTIVE
+        # Right from human perspective, Left for Robot
         right_90 = [
             self.check_angle(right_shoulder_angle, angle_90, angle_tol),
-            # self.check_angle(left_shoulder_angle, 50, angle_tol),
             self.check_orientation(right_shoulder, right_elbow, 'x', orientation_tol),
             self.check_orientation(left_shoulder, left_wrist, 'y', orientation_tol),  
             self.check_angle(left_elbow_angle, 100, angle_tol),                    
         ]
 
+        # Left from human perspective, Right for Robot
         left_90 = [
             self.check_angle(left_shoulder_angle, angle_90, angle_tol),
-            # self.check_angle(right_shoulder_angle, 50, angle_tol),
             self.check_orientation(left_shoulder, left_elbow, 'x', orientation_tol),
             self.check_orientation(right_shoulder, right_wrist, 'y', orientation_tol),  
             self.check_angle(right_elbow_angle, 100, angle_tol),                    
         ]
-
-        # right_orientation = self.check_orientation(right_shoulder, right_wrist, 'y', orientation_tol),
-        # left_orientation = self.check_orientation(left_shoulder, left_wrist, 'y', orientation_tol),
-
-        # right_dist = self.check_dist(right_hip, right_wrist)
-        # left_dist = self.check_dist(left_hip, left_wrist)
-
-        #Check items in list
-        # print(f'Shoulder angles - Left: {left_shoulder_angle} Right: {right_shoulder_angle}') # 60ish
-        # print(f'Shoulder - Wrist Orientation: Left: {left_orientation} Right: {right_orientation}')
-
-        # print(f'Elbow angles - Left: {left_elbow_angle} Right: {right_elbow_angle}') #90ish
-        # print(f'Shoulder - Hip Distance: Left: {left_dist}, Right: {right_dist}') #~50
-
-        # print(f'left_90: {left_90}')
-        # print(f'right_90: {right_90}')
-   
 
         if all(stop_conditions):
             self.pose = 'STOP'
@@ -263,10 +216,10 @@ class PoseProcessorNode(DTROS):
             self.pose = "None"
             self.pose_pub.publish(self.pose)
 
-    def calc_angle(self, first_joint, second_joint, third_joint):
+    def calc_angle(self, first_joint, second_joint, third_joint) -> float:
 
         a = np.array(first_joint) # First
-        b = np.array(second_joint) # Mid
+        b = np.array(second_joint) # Middle
         c = np.array(third_joint) # End
         
         radians = np.arctan2(c[1]-b[1], c[0]-b[0]) - np.arctan2(a[1]-b[1], a[0]-b[0])
@@ -277,51 +230,28 @@ class PoseProcessorNode(DTROS):
             
         return angle 
     
-    def check_angle(self, angle, target, tolerance):
+    def check_angle(self, angle, target, tolerance) -> bool:
         return target - tolerance < angle < target + tolerance
 
-    def check_orientation(self, landmark1, landmark2, axis, tolerance) :
+    def check_orientation(self, landmark1, landmark2, axis, tolerance) -> bool:
         if axis == 'x':
             diff = abs(landmark1[1] - landmark2[1])
             return -tolerance < diff < tolerance
-            #Convert to test function:
-            # return diff
+
         if axis == 'y':
             diff =  abs(landmark1[0] - landmark2[0])
             return -tolerance < diff < tolerance
-            #Convert to test function:
-            # return diff
 
-    def calc_centroid(self, landmarks):
-        #Need to add distance calc
+
+    def calc_centroid(self, landmarks) -> None:
         if landmarks is not None:
-            #Store shoulder landmarks, use to calculate centroid. left/ right assumes that person is facing camera
-            #Should be 640
-            # img_width = self.processed_image.shape[1]
-
-            # left_hip_pos = landmarks[mp_pose.PoseLandmark.LEFT_HIP.value].x * img_width
-            # right_hip_pos = landmarks[mp_pose.PoseLandmark.RIGHT_HIP.value].x * img_width
+            #Store shoulder landmarks, use to calculate centroid. left/ right assumes that person is facing camera  
 
             left_hip_pos = self.get_landmark_pos(landmarks, 'LEFT_HIP')[0]
             right_hip_pos = self.get_landmark_pos(landmarks, 'RIGHT_HIP')[0]
 
-
-            # print(f'left hip: {left_hip_pos}')
-            # print(f'right hip: {right_hip_pos}')
-
             self.centroid = int((left_hip_pos + right_hip_pos) / 2)
-
-            # rospy.loginfo(f'POSE PROCESSOR CENTROID: {self.centroid}')
             self.centroid_pub.publish(self.centroid)
-            # rospy.loginfo(f"Publishing centroid: {self.centroid}")
-
-        # else:
-        #     self.centroid = None
-        #     self.centroid_pub.publish(self.centroid)
-            # rospy.loginfo(f"Publishing centroid: {self.centroid}")
-            # turn = 0
-
-        # return turn
 
     def main(self):
         rospy.set_param('pose_processor_ready', True)
@@ -335,7 +265,6 @@ class PoseProcessorNode(DTROS):
             if landmarks is not None:
                 self.pos_landmarks(landmarks)
 
-            # self.centroid = None
 
         self.rate.sleep()
 
